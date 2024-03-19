@@ -3,7 +3,6 @@
         :data="chartData"
         :options="chartOptions"
     />
-    {{ chartData }}
 </template>
 
 <script>
