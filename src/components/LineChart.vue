@@ -3,7 +3,7 @@
         :data="chartData"
         :options="chartOptions"
     />
-    {{chartData}}
+    {{ chartData }}
 </template>
 
 <script>
@@ -20,7 +20,7 @@ export default {
     name: 'LineChart',
     components: {Line},
     computed: {
-        updateChartData : function () {
+        updateChartData: function () {
             return this.chartData;
         },
         updateChartOptions() {
