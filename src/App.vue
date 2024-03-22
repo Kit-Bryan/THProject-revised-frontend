@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { computed, ref, watch } from "vue";
 import axios from "axios";
 import LineChart from "@/components/LineChart.vue";
 import { socket } from "@/socket.js";
@@ -108,8 +108,9 @@ async function getChartData(timeRange) {
                 data: parsedData,
             });
         });
+        chartValues.value = newData;
     });
-    chartValues.value = newData;
+
 }
 
 socket.on("latestData", socketData => {
@@ -153,7 +154,7 @@ let chartConfig = {
         },
     },
     layout: {
-      padding: 10
+        padding: 10
     },
     scales: {
         temperatureAxis: {
@@ -180,24 +181,36 @@ let chartConfig = {
     },
 };
 
+let panelData = computed(() => {
+    return [
+        {
+            deviceId: "dummy-1",
+            temp: panelValues.value['dummy-1-temperature'],
+            humidity: panelValues.value['dummy-1-humidity']
+        }, {
+            deviceId: "dummy-2",
+            temp: panelValues.value['dummy-2-temperature'],
+            humidity: panelValues.value['dummy-2-humidity']
+        }, {
+            deviceId: "dummy-3",
+            temp: panelValues.value['dummy-3-temperature'],
+            humidity: panelValues.value['dummy-3-humidity']
+        },
+    ];
+})
+
+
+console.log(panelValues.value['dummy-1-temperature'])
+
 </script>
+
 
 <template>
     <div class="flex justify-center font-roboto">
-        <RealtimePanel
-            deviceID="dummy-1"
-            :temp="panelValues['dummy-1-temperature']"
-            :humidity="panelValues['dummy-1-humidity']"
-        />
-        <RealtimePanel
-            deviceID="dummy-2"
-            :temp="panelValues['dummy-2-temperature']"
-            :humidity="panelValues['dummy-2-humidity']"
-        />
-        <RealtimePanel
-            deviceID="dummy-3"
-            :temp="panelValues['dummy-3-temperature']"
-            :humidity="panelValues['dummy-3-humidity']"
+        <RealtimePanel v-for="(item, index) in panelData"
+                       :deviceID="item.deviceId"
+                       :temp="item.temp"
+                       :humidity="item.humidity"
         />
     </div>
     <div class="flex">
@@ -209,6 +222,7 @@ let chartConfig = {
             <option value="5m">5 Minutes</option>
             <option value="30m">30 Minutes</option>
             <option value="1hr">1 Hour</option>
+            <option value="12hr">12 Hours</option>
             <option value="24hr">24 Hours</option>
         </select>
     </div>
