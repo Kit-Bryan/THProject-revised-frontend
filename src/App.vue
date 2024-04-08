@@ -1,9 +1,10 @@
 <script setup>
-import { computed, ref, watch } from "vue";
+import { computed, ref } from "vue";
 import axios from "axios";
 import LineChart from "@/components/LineChart.vue";
 import { socket } from "@/socket.js";
 import RealtimePanel from "@/components/RealtimePanel.vue";
+
 
 let parsedData;
 let chartValues = ref({
@@ -85,7 +86,7 @@ async function getChartData(timeRange) {
     let newData = {datasets: []};
     // Default time-range
     timeRange ??= "5m";
-    let url = `http://localhost:3000/api/data?range=${timeRange}`
+    let url = `${import.meta.env.VITE_API_BACKEND_URL}/api/data?range=${timeRange}`
     console.log(url)
 
     await axios.get(url).then((response) => {
@@ -110,7 +111,6 @@ async function getChartData(timeRange) {
         });
         chartValues.value = newData;
     });
-
 }
 
 socket.on("latestData", socketData => {
@@ -199,8 +199,6 @@ let panelData = computed(() => {
     ];
 })
 
-
-console.log(panelValues.value['dummy-1-temperature'])
 
 </script>
 
